@@ -1,7 +1,8 @@
 library ml_translator;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/annotations.dart';
+export 'src/ml_translation.dart';
+export 'src/translator.dart';
+export 'src/translator_loading_widget.dart';
+export 'src/translation_language.dart';
+export 'utils/translator_utils.dart';

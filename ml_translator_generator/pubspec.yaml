@@ -1,17 +1,25 @@
 name: ml_translator_generator
-description: "A new Flutter package project."
+description: "Code generator for ml_package"
 version: 0.0.1
 homepage:
+publish_to: none
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
+  build:
   flutter:
     sdk: flutter
+  source_gen:
+  ml_translator:
+    path: ../ml_translator/
+  analyzer: ^6.4.1
+  
 
 dev_dependencies:
+  build_runner:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
