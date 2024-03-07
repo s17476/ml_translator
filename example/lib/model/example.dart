@@ -173,7 +173,7 @@ class TranslatorState<T extends MlTranslation> extends State<Translator> {
       const Duration(seconds: 2),
       () async {
         await translateTo(
-          TranslationLanguage.polish,
+          TranslationLanguage.chinese,
         );
       },
     );
