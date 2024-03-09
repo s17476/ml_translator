@@ -1,6 +1,6 @@
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
-import 'package:ml_translator/ml_translator.dart';
-// import 'package:ml_translator/src/translation_language.dart';
+
+import '../ml_translator.dart';
 
 class TranslatorUtils {
   static TranslationLanguage? _sourceLanguage;
@@ -43,8 +43,8 @@ class TranslatorUtils {
 
     if (_translator == null || shouldInitTarget || shouldInitSource) {
       _translator = OnDeviceTranslator(
-        sourceLanguage: sourceLanguage.toTranslateLanguage(),
-        targetLanguage: targetLanguage.toTranslateLanguage(),
+        sourceLanguage: toTranslateLanguage(sourceLanguage),
+        targetLanguage: toTranslateLanguage(targetLanguage),
       );
     }
 
@@ -88,4 +88,9 @@ class TranslatorUtils {
 
     return true;
   }
+
+  static TranslateLanguage toTranslateLanguage(
+    TranslationLanguage translationLanguage,
+  ) =>
+      TranslateLanguage.values.byName(translationLanguage.name);
 }

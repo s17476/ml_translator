@@ -1,5 +1,3 @@
-import 'package:google_mlkit_translation/google_mlkit_translation.dart';
-
 enum TranslationLanguage {
   afrikaans('af'),
   albanian('sq'),
@@ -68,7 +66,4 @@ enum TranslationLanguage {
   String toJson() => name;
 
   static TranslationLanguage fromJson(String json) => values.byName(json);
-
-  TranslateLanguage toTranslateLanguage() =>
-      TranslateLanguage.values.byName(name);
 }

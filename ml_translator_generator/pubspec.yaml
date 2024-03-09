@@ -13,9 +13,9 @@ dependencies:
   flutter:
     sdk: flutter
   source_gen:
+  analyzer: ^6.4.1
   ml_translator:
     path: ../ml_translator/
-  analyzer: ^6.4.1
   
 
 dev_dependencies:
@@ -23,6 +23,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

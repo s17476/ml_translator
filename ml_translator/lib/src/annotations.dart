@@ -1,14 +1,12 @@
-import 'package:ml_translator/src/translation_language.dart';
-
 class MlTranslator {
-  final TranslationLanguage baseLanguage;
+  final String baseLanguage;
   final String downloading;
   final String translating;
   final String done;
   final String error;
 
   const MlTranslator({
-    this.baseLanguage = TranslationLanguage.english,
+    this.baseLanguage = 'en',
     this.downloading = 'Downloading language model',
     this.translating = 'Translating',
     this.done = 'Done',

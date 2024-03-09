@@ -1,9 +1,9 @@
-import 'package:ml_translator/ml_translator.dart';
+import '../ml_translator.dart';
 
 abstract class MlTranslation {
   const MlTranslation();
 
-  TranslationLanguage get sourceLanguage;
+  String get sourceLanguage;
 
   String get $downloading;
 
