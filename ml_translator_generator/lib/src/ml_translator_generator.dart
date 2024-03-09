@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:ml_translator/ml_translator.dart';
-import 'package:ml_translator_generator/src/model_visitor.dart';
+import 'model_visitor.dart';
 
 import 'package:source_gen/source_gen.dart';
 

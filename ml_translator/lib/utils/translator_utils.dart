@@ -60,20 +60,18 @@ class TranslatorUtils {
   }
 
   static Future<bool> _initLanguage(TranslationLanguage language) async {
-    print('XXXXX download start');
     final modelManager = OnDeviceTranslatorModelManager();
 
     final isDownloaded = await modelManager.isModelDownloaded(language.code);
 
     if (!isDownloaded) {
-      //TODO dodać obsługę false
       try {
         await modelManager.downloadModel(language.code);
       } catch (_) {
         return false;
       }
     }
-    print('XXXXX download finish');
+
     return true;
   }
 

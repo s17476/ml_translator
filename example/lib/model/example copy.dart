@@ -3,7 +3,9 @@
 
 // // part 'example.translator.dart';
 
-// @MlTranslator()
+// @MlTranxxslator(
+//   baseLanguage: TranslationLanguage.english,
+// )
 // class Example with _$Example {
 //   const factory Example({
 //     @Val('My best app') String title,

@@ -22,10 +22,8 @@ dev_dependencies:
   ml_translator_generator:
     path: ../ml_translator_generator/
   build_runner:
-
   flutter_lints: ^3.0.0
 
 flutter:
-
   uses-material-design: true
 
