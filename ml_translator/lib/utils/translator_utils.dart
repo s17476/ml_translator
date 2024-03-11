@@ -1,6 +1,6 @@
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 
-import '../ml_translator.dart';
+import '../ml_translator_gen.dart';
 
 class TranslatorUtils {
   static TranslationLanguage? _sourceLanguage;

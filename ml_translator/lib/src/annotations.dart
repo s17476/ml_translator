@@ -1,12 +1,12 @@
 class MlTranslator {
-  final String baseLanguage;
+  final String sourceLanguage;
   final String downloading;
   final String translating;
   final String done;
   final String error;
 
   const MlTranslator({
-    this.baseLanguage = 'en',
+    this.sourceLanguage = 'en',
     this.downloading = 'Downloading language model',
     this.translating = 'Translating',
     this.done = 'Done',
@@ -18,6 +18,7 @@ const mlTranslator = MlTranslator();
 
 class Val {
   final String val;
+  final String? description;
   final String? af;
   final String? sq;
   final String? ar;
@@ -80,6 +81,7 @@ class Val {
 
   const Val(
     this.val, {
+    this.description,
     this.af,
     this.sq,
     this.ar,

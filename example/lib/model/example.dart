@@ -1,34 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:ml_translator/ml_translator.dart';
-import 'package:ml_translator/ml_translator_widgets.dart';
 
-part 'example.translator.dart';
+// part 'example.translator.dart';
 
-@MlTranslator(baseLanguage: 'da')
+@MlTranslator(sourceLanguage: 'en')
 class Example with _$Example {
   const factory Example({
-    @Val('My best app') String title,
+    @Val('My best app', description: 'My awesome title') String title,
     @Val('This is some text') String bodyText,
+    @Val('This is second line of text') String secondText,
   }) = _Example;
 }
 
 class _Example implements Example, MlTranslation {
   const _Example({
-    // ignore: unused_element
     this.sourceLanguage = 'en',
-    // ignore: unused_element
     this.$downloading = 'Downloading language model',
-    // ignore: unused_element
     this.$translating = 'Translating',
-    // ignore: unused_element
     this.$done = 'Done',
-    // ignore: unused_element
     this.$error = 'Error',
-    // ignore: unused_element
     this.$attribution =
         'THIS SERVICE MAY CONTAIN TRANSLATIONS POWERED BY GOOGLE. GOOGLE DISCLAIMS ALL WARRANTIES RELATED TO THE TRANSLATIONS, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTIES OF ACCURACY, RELIABILITY, AND ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.',
     this.title = 'My best app',
     this.bodyText = 'This is some text',
+    this.secondText = 'This is second line of text',
   });
 
   @override
@@ -56,15 +51,16 @@ class _Example implements Example, MlTranslation {
   final String bodyText;
 
   @override
+  final String secondText;
+
+  @override
   Future<Example> translateTo(TranslationLanguage targetLanguage) async {
     const translate = TranslatorUtils.translate;
 
-    if (targetLanguage == sourceLanguage) {
-      return this;
-    }
+    if (targetLanguage.code == sourceLanguage) return this;
 
     return _Example(
-      sourceLanguage: targetLanguage,
+      sourceLanguage: targetLanguage.code,
       $downloading: await translate($downloading),
       $translating: await translate($translating),
       $done: await translate($done),
@@ -72,6 +68,7 @@ class _Example implements Example, MlTranslation {
       $attribution: await translate($attribution),
       title: await translate(title),
       bodyText: await translate(bodyText),
+      secondText: await translate(secondText),
     );
   }
 }
@@ -79,9 +76,8 @@ class _Example implements Example, MlTranslation {
 mixin _$Example {
   String get title => throw Exception();
   String get bodyText => throw Exception();
+  String get secondText => throw Exception();
 }
-
-// Translator Widget
 
 class Translator extends StatefulWidget {
   const Translator({
@@ -114,7 +110,7 @@ class TranslatorState<T extends MlTranslation> extends State<Translator> {
   bool _showError = false;
   bool _showInfo = false;
 
-  Locale get locale => Locale((_translation as _Example).sourceLanguage.code);
+  Locale get locale => Locale((_translation as _Example).sourceLanguage);
 
   String get $downloading => (_translation as _Example).$downloading;
   String get $translating => (_translation as _Example).$translating;
@@ -122,9 +118,12 @@ class TranslatorState<T extends MlTranslation> extends State<Translator> {
   String get $error => (_translation as _Example).$error;
   String get $attribution => (_translation as _Example).$attribution;
 
+  /// My awesome title
   String get title => _translation.title;
 
   String get bodyText => _translation.bodyText;
+
+  String get secondText => _translation.secondText;
 
   Future<void> translateTo(TranslationLanguage targetLanguage) async {
     setState(() {
@@ -134,12 +133,16 @@ class TranslatorState<T extends MlTranslation> extends State<Translator> {
       _showInfo = true;
     });
 
-    final example = (_translation as _Example);
+    const source = (Example() as _Example);
 
-    final sourceLanguage = example.sourceLanguage;
+    final sourceLanguage = source.sourceLanguage;
 
-    final isInitialized =
-        await TranslatorUtils.initTranslator(sourceLanguage, targetLanguage);
+    final isInitialized = await TranslatorUtils.initTranslator(
+      TranslationLanguage.values.firstWhere(
+        (element) => element.code == sourceLanguage,
+      ),
+      targetLanguage,
+    );
 
     setState(() {
       _isDownloading = false;
@@ -151,7 +154,7 @@ class TranslatorState<T extends MlTranslation> extends State<Translator> {
     });
 
     if (isInitialized) {
-      final result = await example.translateTo(targetLanguage);
+      final result = await source.translateTo(targetLanguage);
 
       setState(() {
         _translation = result;
@@ -181,18 +184,12 @@ class TranslatorState<T extends MlTranslation> extends State<Translator> {
       const Duration(seconds: 2),
       () async {
         await translateTo(
-          TranslationLanguage.chinese,
+          TranslationLanguage.polish,
         );
       },
     );
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose - usunąć modele językowe
-    super.dispose();
   }
 
   @override

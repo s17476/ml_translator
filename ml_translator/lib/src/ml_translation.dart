@@ -1,4 +1,4 @@
-import '../ml_translator.dart';
+import '../ml_translator_gen.dart';
 
 abstract class MlTranslation {
   const MlTranslation();
