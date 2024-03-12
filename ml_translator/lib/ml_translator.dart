@@ -1,5 +1,7 @@
 library ml_translator;
 
+export 'package:flutter/material.dart';
+
 export 'src/annotations.dart';
 export 'src/ml_translation.dart';
 export 'src/translator_loading_widget.dart';

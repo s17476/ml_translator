@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:ml_translator/ml_translator.dart';
 
-// part 'example.translator.dart';
+part 'example.translator.dart';
 
 @MlTranslator(sourceLanguage: 'en')
 class Example with _$Example {
@@ -12,223 +11,236 @@ class Example with _$Example {
   }) = _Example;
 }
 
-class _Example implements Example, MlTranslation {
-  const _Example({
-    this.sourceLanguage = 'en',
-    this.$downloading = 'Downloading language model',
-    this.$translating = 'Translating',
-    this.$done = 'Done',
-    this.$error = 'Error',
-    this.$attribution =
-        'THIS SERVICE MAY CONTAIN TRANSLATIONS POWERED BY GOOGLE. GOOGLE DISCLAIMS ALL WARRANTIES RELATED TO THE TRANSLATIONS, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTIES OF ACCURACY, RELIABILITY, AND ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.',
-    this.title = 'My best app',
-    this.bodyText = 'This is some text',
-    this.secondText = 'This is second line of text',
-  });
+// class _Example implements Example, MlTranslation {
+//   const _Example({
+//     this.sourceLanguage = 'en',
+//     this.$downloading = 'Downloading language model',
+//     this.$translating = 'Translating',
+//     this.$done = 'Done',
+//     this.$error = 'Error',
+//     this.$attribution =
+//         'THIS SERVICE MAY CONTAIN TRANSLATIONS POWERED BY GOOGLE. GOOGLE DISCLAIMS ALL WARRANTIES RELATED TO THE TRANSLATIONS, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTIES OF ACCURACY, RELIABILITY, AND ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.',
+//     this.title = 'My best app',
+//     this.bodyText = 'This is some text',
+//     this.secondText = 'This is second line of text',
+//   });
 
-  @override
-  final String sourceLanguage;
+//   @override
+//   final String sourceLanguage;
 
-  @override
-  final String $downloading;
+//   @override
+//   final String $downloading;
 
-  @override
-  final String $translating;
+//   @override
+//   final String $translating;
 
-  @override
-  final String $done;
+//   @override
+//   final String $done;
 
-  @override
-  final String $error;
+//   @override
+//   final String $error;
 
-  @override
-  final String $attribution;
+//   @override
+//   final String $attribution;
 
-  @override
-  final String title;
+//   @override
+//   final String title;
 
-  @override
-  final String bodyText;
+//   @override
+//   final String bodyText;
 
-  @override
-  final String secondText;
+//   @override
+//   final String secondText;
 
-  @override
-  Future<Example> translateTo(TranslationLanguage targetLanguage) async {
-    const translate = TranslatorUtils.translate;
+//   @override
+//   Future<Example> translateTo(TranslationLanguage targetLanguage) async {
+//     const translate = TranslatorUtils.translate;
 
-    if (targetLanguage.code == sourceLanguage) return this;
+//     if (targetLanguage.code == sourceLanguage) return this;
 
-    return _Example(
-      sourceLanguage: targetLanguage.code,
-      $downloading: await translate($downloading),
-      $translating: await translate($translating),
-      $done: await translate($done),
-      $error: await translate($error),
-      $attribution: await translate($attribution),
-      title: await translate(title),
-      bodyText: await translate(bodyText),
-      secondText: await translate(secondText),
-    );
-  }
-}
+//     return _Example(
+//       sourceLanguage: targetLanguage.code,
+//       $downloading: await translate($downloading),
+//       $translating: await translate($translating),
+//       $done: await translate($done),
+//       $error: await translate($error),
+//       $attribution: await translate($attribution),
+//       title: await translate(title),
+//       bodyText: await translate(bodyText),
+//       secondText: await translate(secondText),
+//     );
+//   }
 
-mixin _$Example {
-  String get title => throw Exception();
-  String get bodyText => throw Exception();
-  String get secondText => throw Exception();
-}
+//   @override
+//   int get hashCode => Object.hashAll([
+//         sourceLanguage,
+//         $downloading,
+//         $translating,
+//         $done,
+//         $error,
+//         $attribution,
+//         title,
+//         bodyText,
+//         secondText,
+//       ]);
+// }
 
-class Translator extends StatefulWidget {
-  const Translator({
-    super.key,
-    required this.builder,
-    this.cleanLanguageModels = true,
-  });
+// mixin _$Example {
+//   String get title => throw Exception();
+//   String get bodyText => throw Exception();
+//   String get secondText => throw Exception();
+// }
 
-  final Builder builder;
-  final bool cleanLanguageModels;
+// class Translator extends StatefulWidget {
+//   const Translator({
+//     super.key,
+//     required this.builder,
+//     this.cleanLanguageModels = true,
+//   });
 
-  static TranslatorState of(BuildContext context) {
-    try {
-      return context
-          .dependOnInheritedWidgetOfExactType<_InheritedTranslator>()!
-          .state;
-    } catch (_) {
-      throw Exception('Please provide Translator context');
-    }
-  }
+//   final Builder builder;
+//   final bool cleanLanguageModels;
 
-  @override
-  State<Translator> createState() => TranslatorState();
-}
+//   static TranslatorState of(BuildContext context) {
+//     try {
+//       return context
+//           .dependOnInheritedWidgetOfExactType<_InheritedTranslator>()!
+//           .state;
+//     } catch (_) {
+//       throw Exception('Please provide Translator context');
+//     }
+//   }
 
-class TranslatorState<T extends MlTranslation> extends State<Translator> {
-  late Example _translation;
-  bool _isDownloading = false;
-  bool _isTranslating = false;
-  bool _showError = false;
-  bool _showInfo = false;
+//   @override
+//   State<Translator> createState() => TranslatorState();
+// }
 
-  Locale get locale => Locale((_translation as _Example).sourceLanguage);
+// class TranslatorState<T extends MlTranslation> extends State<Translator> {
+//   late Example _translation;
+//   bool _isDownloading = false;
+//   bool _isTranslating = false;
+//   bool _showError = false;
+//   bool _showInfo = false;
 
-  String get $downloading => (_translation as _Example).$downloading;
-  String get $translating => (_translation as _Example).$translating;
-  String get $done => (_translation as _Example).$done;
-  String get $error => (_translation as _Example).$error;
-  String get $attribution => (_translation as _Example).$attribution;
+//   Locale get locale => Locale((_translation as _Example).sourceLanguage);
 
-  /// My awesome title
-  String get title => _translation.title;
+//   String get $downloading => (_translation as _Example).$downloading;
+//   String get $translating => (_translation as _Example).$translating;
+//   String get $done => (_translation as _Example).$done;
+//   String get $error => (_translation as _Example).$error;
+//   String get $attribution => (_translation as _Example).$attribution;
 
-  String get bodyText => _translation.bodyText;
+//   /// My awesome title
+//   String get title => _translation.title;
 
-  String get secondText => _translation.secondText;
+//   String get bodyText => _translation.bodyText;
 
-  Future<void> translateTo(TranslationLanguage targetLanguage) async {
-    setState(() {
-      _isDownloading = true;
-      _isTranslating = true;
-      _showError = false;
-      _showInfo = true;
-    });
+//   String get secondText => _translation.secondText;
 
-    const source = (Example() as _Example);
+//   Future<void> translateTo(TranslationLanguage targetLanguage) async {
+//     setState(() {
+//       _isDownloading = true;
+//       _isTranslating = true;
+//       _showError = false;
+//       _showInfo = true;
+//     });
 
-    final sourceLanguage = source.sourceLanguage;
+//     const source = (Example() as _Example);
 
-    final isInitialized = await TranslatorUtils.initTranslator(
-      TranslationLanguage.values.firstWhere(
-        (element) => element.code == sourceLanguage,
-      ),
-      targetLanguage,
-    );
+//     final sourceLanguage = source.sourceLanguage;
 
-    setState(() {
-      _isDownloading = false;
+//     final isInitialized = await TranslatorUtils.initTranslator(
+//       TranslationLanguage.values.firstWhere(
+//         (element) => element.code == sourceLanguage,
+//       ),
+//       targetLanguage,
+//     );
 
-      if (!isInitialized) {
-        _isTranslating = false;
-        _showError = true;
-      }
-    });
+//     setState(() {
+//       _isDownloading = false;
 
-    if (isInitialized) {
-      final result = await source.translateTo(targetLanguage);
+//       if (!isInitialized) {
+//         _isTranslating = false;
+//         _showError = true;
+//       }
+//     });
 
-      setState(() {
-        _translation = result;
-        _isTranslating = false;
-      });
-    }
+//     if (isInitialized) {
+//       final result = await source.translateTo(targetLanguage);
 
-    if (widget.cleanLanguageModels) {
-      TranslatorUtils.deleteLanguage(targetLanguage);
-    }
-  }
+//       setState(() {
+//         _translation = result;
+//         _isTranslating = false;
+//       });
+//     }
 
-  void _confirmTranslation() {
-    setState(() {
-      _isDownloading = false;
-      _isTranslating = false;
-      _showError = false;
-      _showInfo = false;
-    });
-  }
+//     if (widget.cleanLanguageModels) {
+//       TranslatorUtils.deleteLanguage(targetLanguage);
+//     }
+//   }
 
-  @override
-  void initState() {
-    _translation = const Example();
+//   void _confirmTranslation() {
+//     setState(() {
+//       _isDownloading = false;
+//       _isTranslating = false;
+//       _showError = false;
+//       _showInfo = false;
+//     });
+//   }
 
-    Future.delayed(
-      const Duration(seconds: 2),
-      () async {
-        await translateTo(
-          TranslationLanguage.polish,
-        );
-      },
-    );
+//   @override
+//   void initState() {
+//     _translation = const Example();
 
-    super.initState();
-  }
+//     Future.delayed(
+//       const Duration(seconds: 2),
+//       () async {
+//         await translateTo(
+//           TranslationLanguage.polish,
+//         );
+//       },
+//     );
 
-  @override
-  Widget build(BuildContext context) {
-    return Directionality(
-      textDirection:
-          TextDirection.ltr, // ustawic text direction na podstawie języka
-      child: Stack(
-        children: [
-          _InheritedTranslator(
-            state: this,
-            child: widget.builder,
-          ),
-          if (_showInfo)
-            TranslatorLoadingWidget(
-              isDownloading: _isDownloading,
-              isTranslating: _isTranslating,
-              showError: _showError,
-              downloading: $downloading,
-              translating: $translating,
-              done: $done,
-              error: $error,
-              attribution: $attribution,
-              confirm: _confirmTranslation,
-            )
-        ],
-      ),
-    );
-  }
-}
+//     super.initState();
+//   }
 
-class _InheritedTranslator extends InheritedWidget {
-  final TranslatorState state;
+//   @override
+//   Widget build(BuildContext context) {
+//     return Directionality(
+//       textDirection:
+//           TextDirection.ltr, // ustawic text direction na podstawie języka
+//       child: Stack(
+//         children: [
+//           _InheritedTranslator(
+//             state: this,
+//             child: widget.builder,
+//           ),
+//           if (_showInfo)
+//             TranslatorLoadingWidget(
+//               isDownloading: _isDownloading,
+//               isTranslating: _isTranslating,
+//               showError: _showError,
+//               downloading: $downloading,
+//               translating: $translating,
+//               done: $done,
+//               error: $error,
+//               attribution: $attribution,
+//               confirm: _confirmTranslation,
+//             )
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-  const _InheritedTranslator({
-    required this.state,
-    required super.child,
-  });
+// class _InheritedTranslator extends InheritedWidget {
+//   final TranslatorState state;
 
-  @override
-  bool updateShouldNotify(_InheritedTranslator oldWidget) => oldWidget != this;
-}
+//   const _InheritedTranslator({
+//     required this.state,
+//     required super.child,
+//   });
+
+//   @override
+//   bool updateShouldNotify(_InheritedTranslator oldWidget) => oldWidget != this;
+// }

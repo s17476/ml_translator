@@ -84,7 +84,7 @@ class TranslatorGenerator extends GeneratorForAnnotation<MlTranslator> {
       '  this.\$attribution = \'THIS SERVICE MAY CONTAIN TRANSLATIONS POWERED BY GOOGLE. GOOGLE DISCLAIMS ALL WARRANTIES RELATED TO THE TRANSLATIONS, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTIES OF ACCURACY, RELIABILITY, AND ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\',',
     );
 
-    // pola konstruktora
+    // constructor fields
 
     for (var element in visitor.elements) {
       final annotation = element.metadata[0].computeConstantValue();
@@ -168,6 +168,107 @@ class TranslatorGenerator extends GeneratorForAnnotation<MlTranslator> {
     // translateTo end
     buffer.writeln('}');
 
+    // toJson start
+    buffer.writeln(
+      '''
+@override
+Map<String, dynamic> toJson() => {
+  ''',
+    );
+
+    for (var field in [...translations, 'attribution']) {
+      if (field == 'sourceLanguage') {
+        buffer.writeln('\'sourceLanguage\': sourceLanguage,');
+      } else {
+        buffer.writeln('\'$field\': \$$field,');
+      }
+    }
+
+    for (var element in visitor.elements) {
+      buffer.writeln(
+        '\'${element.displayName}\': ${element.displayName},',
+      );
+    }
+
+    // toJson end
+    buffer.writeln('};\n');
+
+    // fromJson start
+    buffer.writeln(
+      '''
+@override
+_${visitor.className} fromJson(Map<String, dynamic> json) => _${visitor.className}(
+  ''',
+    );
+
+    for (var field in [...translations, 'attribution']) {
+      if (field == 'sourceLanguage') {
+        buffer.writeln('sourceLanguage: json[\'sourceLanguage\'] as String,');
+      } else {
+        buffer.writeln('\$$field: json[\'\\\$$field\'] as String,');
+      }
+    }
+
+    for (var element in visitor.elements) {
+      buffer.writeln(
+        '${element.displayName}: json[\'${element.displayName}\'] as String,',
+      );
+    }
+
+    // fromJson end
+    buffer.writeln(');\n');
+
+    // == operator start
+    buffer.writeln('''
+@override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _${visitor.className}
+''');
+
+    for (var field in [...translations, 'attribution']) {
+      if (field == 'sourceLanguage') {
+        buffer.writeln(
+          '&& (identical(other.sourceLanguage, sourceLanguage) || other.sourceLanguage == sourceLanguage)',
+        );
+      } else {
+        buffer.writeln(
+            '&& (identical(other.\$$field, \$$field) || other.\$$field == \$$field)');
+      }
+    }
+
+    for (var element in visitor.elements) {
+      buffer.writeln(
+        '&& (identical(other.${element.displayName}, ${element.displayName}) || other.${element.displayName} == ${element.displayName})',
+      );
+    }
+
+    // == operator end
+    buffer.writeln(');');
+    buffer.writeln('}');
+
+    // hashCode start
+    buffer.writeln('''
+@override
+  int get hashCode => Object.hashAll([
+''');
+
+    for (var field in [...translations, 'attribution']) {
+      if (field == 'sourceLanguage') {
+        buffer.writeln('sourceLanguage,');
+      } else {
+        buffer.writeln('\$$field,');
+      }
+    }
+
+    for (var element in visitor.elements) {
+      buffer.writeln('${element.displayName},');
+    }
+
+    // hashCode end
+    buffer.writeln(']);');
+
     // class end
     buffer.writeln('}');
   }
@@ -206,7 +307,7 @@ class Translator extends StatefulWidget {
     List<String> translations,
   ) {
     buffer.write('''
-class TranslatorState<T extends MlTranslation> extends State<Translator> {
+class TranslatorState extends State<Translator> {
   late ${visitor.className} _translation;
   bool _isDownloading = false;
   bool _isTranslating = false;
@@ -234,8 +335,11 @@ class TranslatorState<T extends MlTranslation> extends State<Translator> {
       final description = annotation?.getField('description')?.toStringValue();
 
       if (description != null && description.isNotEmpty) {
-        buffer.writeln('  /// $description');
+        buffer.writeln('  /// $description\n///');
       }
+
+      final val = annotation?.getField('val')?.toStringValue();
+      buffer.writeln('  /// **$val**');
 
       buffer.writeln(
         'String get ${element.displayName} => _translation.${element.displayName};\n',

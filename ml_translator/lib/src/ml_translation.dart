@@ -15,5 +15,9 @@ abstract class MlTranslation {
 
   String get $attribution;
 
-  Future<void> translateTo(TranslationLanguage targetLanguage);
+  Future<Object> translateTo(TranslationLanguage targetLanguage);
+
+  Map<String, dynamic> toJson();
+
+  MlTranslation fromJson(Map<String, dynamic> json);
 }
