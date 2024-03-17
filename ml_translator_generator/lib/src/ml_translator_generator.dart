@@ -60,6 +60,28 @@ class TranslatorGenerator extends GeneratorForAnnotation<MlTranslator> {
     ConstantReader annotation,
     List<String> translations,
   ) {
+    // translations map start
+    buffer.writeln('const _\$translations = <String, String>{');
+
+    final languageCodes = TranslationLanguage.values.map((e) => e.code);
+
+    for (var element in visitor.elements) {
+      for (var code in languageCodes) {
+        final annotation = element.metadata[0].computeConstantValue();
+
+        final translation = annotation?.getField(code)?.toStringValue();
+
+        if (translation != null) {
+          buffer.writeln(
+            '\'${element.displayName}_$code\': \'$translation\',',
+          );
+        }
+      }
+    }
+
+    buffer.writeln('  };\n');
+    // translations map stop
+
     // class
     buffer.writeln(
       'class _${visitor.className} implements Example, MlTranslation {',
@@ -83,6 +105,8 @@ class TranslatorGenerator extends GeneratorForAnnotation<MlTranslator> {
     buffer.writeln(
       '  this.\$attribution = \'THIS SERVICE MAY CONTAIN TRANSLATIONS POWERED BY GOOGLE. GOOGLE DISCLAIMS ALL WARRANTIES RELATED TO THE TRANSLATIONS, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTIES OF ACCURACY, RELIABILITY, AND ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\',',
     );
+
+    buffer.writeln('this.\$translations = _\$translations,');
 
     // constructor fields
 
@@ -123,6 +147,9 @@ class TranslatorGenerator extends GeneratorForAnnotation<MlTranslator> {
       }
     }
 
+    buffer.writeln('\n@override');
+    buffer.writeln('final Map<String, String>? \$translations;');
+
     for (var element in visitor.elements) {
       buffer.writeln('\n@override');
       buffer.writeln(
@@ -151,13 +178,15 @@ class TranslatorGenerator extends GeneratorForAnnotation<MlTranslator> {
       if (field == 'sourceLanguage') {
         buffer.writeln('sourceLanguage: targetLanguage.code,');
       } else {
-        buffer.writeln('\$$field: await translate(\$$field),');
+        buffer.writeln(
+          '\$$field: await translate(\$$field),',
+        );
       }
     }
 
     for (var element in visitor.elements) {
       buffer.writeln(
-        '${element.displayName}: await translate(${element.displayName}),',
+        '${element.displayName}: _\$translations[\'${element.displayName}_\${targetLanguage.code}\'] ?? await translate(${element.displayName}),',
       );
     }
 
@@ -180,9 +209,11 @@ Map<String, dynamic> toJson() => {
       if (field == 'sourceLanguage') {
         buffer.writeln('\'sourceLanguage\': sourceLanguage,');
       } else {
-        buffer.writeln('\'$field\': \$$field,');
+        buffer.writeln('\'\\\$$field\': \$$field,');
       }
     }
+
+    buffer.writeln('\'\\\$translations\': \$translations,');
 
     for (var element in visitor.elements) {
       buffer.writeln(
@@ -208,6 +239,10 @@ _${visitor.className} fromJson(Map<String, dynamic> json) => _${visitor.classNam
         buffer.writeln('\$$field: json[\'\\\$$field\'] as String,');
       }
     }
+
+    buffer.writeln(
+      '\$translations: json[\'\\\$translations\'] as Map<String, String>,',
+    );
 
     for (var element in visitor.elements) {
       buffer.writeln(
@@ -321,7 +356,7 @@ class TranslatorState extends State<Translator> {
     for (var field in [...translations, 'attribution']) {
       if (field != 'sourceLanguage') {
         buffer.writeln(
-          'String get \$$field => (_translation as _Example).\$$field;',
+          'String get _\$$field => (_translation as _Example).\$$field;',
         );
       }
     }
@@ -332,18 +367,41 @@ class TranslatorState extends State<Translator> {
     for (var element in visitor.elements) {
       final annotation = element.metadata[0].computeConstantValue();
 
+      final val = annotation?.getField('val')?.toStringValue();
       final description = annotation?.getField('description')?.toStringValue();
 
-      if (description != null && description.isNotEmpty) {
-        buffer.writeln('  /// $description\n///');
+      final variablesCount = val!.split('%s').length - 1;
+
+      if (variablesCount > 0) {
+        buffer.writeln(
+          'String get _${element.displayName} => _translation.${element.displayName};\n',
+        );
+
+        if (description != null && description.isNotEmpty) {
+          buffer.writeln('  /// $description\n///');
+        }
+        buffer.writeln('  /// **$val**');
+
+        String vars = '';
+        String replacements = '';
+        for (var i = 0; i < variablesCount; i++) {
+          vars += 'String s$i, ';
+          replacements += '.replaceFirst(\'%s\', s$i)';
+        }
+
+        buffer.writeln(
+          'String ${element.displayName}($vars) => _${element.displayName}$replacements;\n',
+        );
+      } else {
+        if (description != null && description.isNotEmpty) {
+          buffer.writeln('  /// $description\n///');
+        }
+        buffer.writeln('  /// **$val**');
+
+        buffer.writeln(
+          'String get ${element.displayName} => _translation.${element.displayName};\n',
+        );
       }
-
-      final val = annotation?.getField('val')?.toStringValue();
-      buffer.writeln('  /// **$val**');
-
-      buffer.writeln(
-        'String get ${element.displayName} => _translation.${element.displayName};\n',
-      );
     }
 
     buffer.write('''
@@ -436,11 +494,11 @@ void _confirmTranslation() {
               isDownloading: _isDownloading,
               isTranslating: _isTranslating,
               showError: _showError,
-              downloading: \$downloading,
-              translating: \$translating,
-              done: \$done,
-              error: \$error,
-              attribution: \$attribution,
+              downloading: _\$downloading,
+              translating: _\$translating,
+              done: _\$done,
+              error: _\$error,
+              attribution: _\$attribution,
               confirm: _confirmTranslation,
             )
         ],

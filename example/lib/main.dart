@@ -58,7 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 16),
             Text(
-              Translator.of(context).secondText,
+              Translator.of(context).secondText(
+                'ZZZZZ',
+                'XXXX',
+                'YYYY22',
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              Translator.of(context).bodyTextWithVar('1234'),
             ),
           ],
         ),

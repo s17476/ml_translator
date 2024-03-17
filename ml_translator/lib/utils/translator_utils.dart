@@ -51,12 +51,19 @@ class TranslatorUtils {
     return true;
   }
 
-  static Future<String> translate(
-    String string,
-  ) async {
-    final result = await _translator!.translateText(string);
+  static Future<String> translate(String string) async {
+    if (!string.contains('%s')) {
+      return await _translator!.translateText(string);
+    }
 
-    return result;
+    final replaced = string.replaceAll('%s', 'xxxx');
+
+    final result = await _translator!.translateText(replaced);
+
+    return result
+        .replaceAll('xxxx', '%s')
+        .replaceAll('XXXX', '%s')
+        .replaceAll('Xxxx', '%s');
   }
 
   static Future<bool> _initLanguage(TranslationLanguage language) async {

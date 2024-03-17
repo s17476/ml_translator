@@ -6,6 +6,11 @@ part of 'example.dart';
 // TranslatorGenerator
 // **************************************************************************
 
+const _$translations = <String, String>{
+  'title_pl': 'Mój customowy własny opis',
+  'bodyText_pl': 'Ble ble',
+};
+
 class _Example implements Example, MlTranslation {
   const _Example({
     this.sourceLanguage = 'en',
@@ -15,9 +20,11 @@ class _Example implements Example, MlTranslation {
     this.$error = 'Error',
     this.$attribution =
         'THIS SERVICE MAY CONTAIN TRANSLATIONS POWERED BY GOOGLE. GOOGLE DISCLAIMS ALL WARRANTIES RELATED TO THE TRANSLATIONS, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTIES OF ACCURACY, RELIABILITY, AND ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.',
+    this.$translations = _$translations,
     this.title = 'My best app',
     this.bodyText = 'This is some text',
-    this.secondText = 'This is second line of text',
+    this.bodyTextWithVar = 'This is some %s text',
+    this.secondText = 'This is %s line of text. %s, %s.',
   });
 
   @override
@@ -39,10 +46,16 @@ class _Example implements Example, MlTranslation {
   final String $attribution;
 
   @override
+  final Map<String, String>? $translations;
+
+  @override
   final String title;
 
   @override
   final String bodyText;
+
+  @override
+  final String bodyTextWithVar;
 
   @override
   final String secondText;
@@ -60,22 +73,30 @@ class _Example implements Example, MlTranslation {
       $done: await translate($done),
       $error: await translate($error),
       $attribution: await translate($attribution),
-      title: await translate(title),
-      bodyText: await translate(bodyText),
-      secondText: await translate(secondText),
+      title: _$translations['title_${targetLanguage.code}'] ??
+          await translate(title),
+      bodyText: _$translations['bodyText_${targetLanguage.code}'] ??
+          await translate(bodyText),
+      bodyTextWithVar:
+          _$translations['bodyTextWithVar_${targetLanguage.code}'] ??
+              await translate(bodyTextWithVar),
+      secondText: _$translations['secondText_${targetLanguage.code}'] ??
+          await translate(secondText),
     );
   }
 
   @override
   Map<String, dynamic> toJson() => {
         'sourceLanguage': sourceLanguage,
-        'downloading': $downloading,
-        'translating': $translating,
-        'done': $done,
-        'error': $error,
-        'attribution': $attribution,
+        '\$downloading': $downloading,
+        '\$translating': $translating,
+        '\$done': $done,
+        '\$error': $error,
+        '\$attribution': $attribution,
+        '\$translations': $translations,
         'title': title,
         'bodyText': bodyText,
+        'bodyTextWithVar': bodyTextWithVar,
         'secondText': secondText,
       };
 
@@ -87,8 +108,10 @@ class _Example implements Example, MlTranslation {
         $done: json['\$done'] as String,
         $error: json['\$error'] as String,
         $attribution: json['\$attribution'] as String,
+        $translations: json['\$translations'] as Map<String, String>,
         title: json['title'] as String,
         bodyText: json['bodyText'] as String,
+        bodyTextWithVar: json['bodyTextWithVar'] as String,
         secondText: json['secondText'] as String,
       );
 
@@ -110,6 +133,8 @@ class _Example implements Example, MlTranslation {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.bodyText, bodyText) ||
                 other.bodyText == bodyText) &&
+            (identical(other.bodyTextWithVar, bodyTextWithVar) ||
+                other.bodyTextWithVar == bodyTextWithVar) &&
             (identical(other.secondText, secondText) ||
                 other.secondText == secondText));
   }
@@ -124,6 +149,7 @@ class _Example implements Example, MlTranslation {
         $attribution,
         title,
         bodyText,
+        bodyTextWithVar,
         secondText,
       ]);
 }
@@ -131,6 +157,7 @@ class _Example implements Example, MlTranslation {
 mixin _$Example {
   String get title => throw Exception();
   String get bodyText => throw Exception();
+  String get bodyTextWithVar => throw Exception();
   String get secondText => throw Exception();
 }
 
@@ -167,11 +194,11 @@ class TranslatorState extends State<Translator> {
 
   Locale get locale => Locale((_translation as _Example).sourceLanguage);
 
-  String get $downloading => (_translation as _Example).$downloading;
-  String get $translating => (_translation as _Example).$translating;
-  String get $done => (_translation as _Example).$done;
-  String get $error => (_translation as _Example).$error;
-  String get $attribution => (_translation as _Example).$attribution;
+  String get _$downloading => (_translation as _Example).$downloading;
+  String get _$translating => (_translation as _Example).$translating;
+  String get _$done => (_translation as _Example).$done;
+  String get _$error => (_translation as _Example).$error;
+  String get _$attribution => (_translation as _Example).$attribution;
 
   /// My awesome title
   ///
@@ -181,8 +208,30 @@ class TranslatorState extends State<Translator> {
   /// **This is some text**
   String get bodyText => _translation.bodyText;
 
-  /// **This is second line of text**
-  String get secondText => _translation.secondText;
+  String get _bodyTextWithVar => _translation.bodyTextWithVar;
+
+  /// My descriptionix
+  ///
+  /// **This is some %s text**
+  String bodyTextWithVar(
+    String s0,
+  ) =>
+      _bodyTextWithVar.replaceFirst('%s', s0);
+
+  String get _secondText => _translation.secondText;
+
+  /// Mój opis
+  ///
+  /// **This is %s line of text. %s, %s.**
+  String secondText(
+    String s0,
+    String s1,
+    String s2,
+  ) =>
+      _secondText
+          .replaceFirst('%s', s0)
+          .replaceFirst('%s', s1)
+          .replaceFirst('%s', s2);
 
   Future<void> translateTo(TranslationLanguage targetLanguage) async {
     setState(() {
@@ -267,11 +316,11 @@ class TranslatorState extends State<Translator> {
               isDownloading: _isDownloading,
               isTranslating: _isTranslating,
               showError: _showError,
-              downloading: $downloading,
-              translating: $translating,
-              done: $done,
-              error: $error,
-              attribution: $attribution,
+              downloading: _$downloading,
+              translating: _$translating,
+              done: _$done,
+              error: _$error,
+              attribution: _$attribution,
               confirm: _confirmTranslation,
             )
         ],
