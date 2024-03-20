@@ -84,7 +84,7 @@ class TranslatorGenerator extends GeneratorForAnnotation<MlTranslator> {
 
     // class
     buffer.writeln(
-      'class _${visitor.className} implements Example, MlTranslation {',
+      'class _${visitor.className} implements ${visitor.className}, MlTranslation {',
     );
 
     // constructor start
@@ -241,7 +241,7 @@ _${visitor.className} fromJson(Map<String, dynamic> json) => _${visitor.classNam
     }
 
     buffer.writeln(
-      '\$translations: json[\'\\\$translations\'] as Map<String, String>,',
+      '\$translations: (json[\'\\\$translations\'] as Map).cast<String, String>(),',
     );
 
     for (var element in visitor.elements) {
@@ -273,6 +273,11 @@ _${visitor.className} fromJson(Map<String, dynamic> json) => _${visitor.classNam
       }
     }
 
+//TODO - fix or it can't be used
+    // buffer.writeln(
+    //   '&& (identical(other.\$translations, \$translations) || other.\$translations == \$translations)',
+    // );
+
     for (var element in visitor.elements) {
       buffer.writeln(
         '&& (identical(other.${element.displayName}, ${element.displayName}) || other.${element.displayName} == ${element.displayName})',
@@ -297,6 +302,10 @@ _${visitor.className} fromJson(Map<String, dynamic> json) => _${visitor.classNam
       }
     }
 
+    // buffer.writeln(
+    //   '\$translations,',
+    // );
+
     for (var element in visitor.elements) {
       buffer.writeln('${element.displayName},');
     }
@@ -314,11 +323,13 @@ class Translator extends StatefulWidget {
   const Translator({
     super.key,
     required this.builder,
-    this.cleanLanguageModels = true,
+    this.cleanLanguageModels = false,
   });
 
-  final Builder builder;
+  final Widget Function(BuildContext context) builder;
   final bool cleanLanguageModels;
+
+  static Future<void> init() => TranslatorUtils.initDb();
 
   static TranslatorState of(BuildContext context) {
     try {
@@ -350,13 +361,16 @@ class TranslatorState extends State<Translator> {
   bool _showInfo = false;
 
   Locale get locale => Locale((_translation as _${visitor.className}).sourceLanguage);
+
+  List<Locale> get supportedLocales =>
+      TranslationLanguage.values.map((lang) => Locale(lang.code)).toList();
   
   ''');
 
     for (var field in [...translations, 'attribution']) {
       if (field != 'sourceLanguage') {
         buffer.writeln(
-          'String get _\$$field => (_translation as _Example).\$$field;',
+          'String get _\$$field => (_translation as _${visitor.className}).\$$field;',
         );
       }
     }
@@ -417,7 +431,7 @@ Future<void> translateTo(TranslationLanguage targetLanguage) async {
 
     final sourceLanguage = source.sourceLanguage;
 
-    final isInitialized = await TranslatorUtils.initTranslator(
+    final isInitialized = await TranslatorUtils.initLanguageModels(
       TranslationLanguage.values.firstWhere(
         (element) => element.code == sourceLanguage,
       ),
@@ -435,6 +449,8 @@ Future<void> translateTo(TranslationLanguage targetLanguage) async {
 
     if (isInitialized) {
       final result = await source.translateTo(targetLanguage);
+
+      TranslatorUtils.saveTranslation<_${visitor.className}>(result as _${visitor.className});
 
       setState(() {
         _translation = result;
@@ -462,18 +478,23 @@ void _confirmTranslation() {
     buffer.write('''
 @override
   void initState() {
-    _translation = const ${visitor.className}();
-
-    Future.delayed(
-      const Duration(seconds: 2),
-      () async {
-        await translateTo(
-          TranslationLanguage.polish,
-        );
-      },
+    final (translation, translationLanguage) = TranslatorUtils.initTranslation<_${visitor.className}>(
+      const ${visitor.className}() as _${visitor.className},
     );
 
+    _translation = translation;
+
+    if (translationLanguage != null) {
+      translateTo(translationLanguage);
+    }
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    TranslatorUtils.closeDb();
+    super.dispose();
   }
 ''');
 
@@ -487,7 +508,9 @@ void _confirmTranslation() {
         children: [
           _InheritedTranslator(
             state: this,
-            child: widget.builder,
+            child: Builder(
+              builder: (context) => widget.builder(context),
+            ),
           ),
           if (_showInfo)
             TranslatorLoadingWidget(

@@ -8,11 +8,12 @@ part of 'example.dart';
 
 const _$translations = <String, String>{
   'title_pl': 'Mój customowy własny opis',
-  'bodyText_pl': 'Ble ble',
+  'polish_pl': 'polski',
+  'spanish_pl': 'hiszp.',
 };
 
-class _Example implements Example, MlTranslation {
-  const _Example({
+class _MyTranslation implements MyTranslation, MlTranslation {
+  const _MyTranslation({
     this.sourceLanguage = 'en',
     this.$downloading = 'Downloading language model',
     this.$translating = 'Translating',
@@ -22,9 +23,19 @@ class _Example implements Example, MlTranslation {
         'THIS SERVICE MAY CONTAIN TRANSLATIONS POWERED BY GOOGLE. GOOGLE DISCLAIMS ALL WARRANTIES RELATED TO THE TRANSLATIONS, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTIES OF ACCURACY, RELIABILITY, AND ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.',
     this.$translations = _$translations,
     this.title = 'My best app',
-    this.bodyText = 'This is some text',
-    this.bodyTextWithVar = 'This is some %s text',
-    this.secondText = 'This is %s line of text. %s, %s.',
+    this.bodyText = 'This text was translated by Google Translator',
+    this.chinese = 'chinese',
+    this.danish = 'danish',
+    this.english = 'english',
+    this.french = 'french',
+    this.german = 'german',
+    this.greek = 'greek',
+    this.italian = 'italian',
+    this.japanese = 'japanese',
+    this.kannada = 'kannada',
+    this.korean = 'korean',
+    this.polish = 'polish',
+    this.spanish = 'spanish',
   });
 
   @override
@@ -55,18 +66,48 @@ class _Example implements Example, MlTranslation {
   final String bodyText;
 
   @override
-  final String bodyTextWithVar;
+  final String chinese;
 
   @override
-  final String secondText;
+  final String danish;
 
   @override
-  Future<Example> translateTo(TranslationLanguage targetLanguage) async {
+  final String english;
+
+  @override
+  final String french;
+
+  @override
+  final String german;
+
+  @override
+  final String greek;
+
+  @override
+  final String italian;
+
+  @override
+  final String japanese;
+
+  @override
+  final String kannada;
+
+  @override
+  final String korean;
+
+  @override
+  final String polish;
+
+  @override
+  final String spanish;
+
+  @override
+  Future<MyTranslation> translateTo(TranslationLanguage targetLanguage) async {
     const translate = TranslatorUtils.translate;
 
     if (targetLanguage.code == sourceLanguage) return this;
 
-    return _Example(
+    return _MyTranslation(
       sourceLanguage: targetLanguage.code,
       $downloading: await translate($downloading),
       $translating: await translate($translating),
@@ -77,11 +118,30 @@ class _Example implements Example, MlTranslation {
           await translate(title),
       bodyText: _$translations['bodyText_${targetLanguage.code}'] ??
           await translate(bodyText),
-      bodyTextWithVar:
-          _$translations['bodyTextWithVar_${targetLanguage.code}'] ??
-              await translate(bodyTextWithVar),
-      secondText: _$translations['secondText_${targetLanguage.code}'] ??
-          await translate(secondText),
+      chinese: _$translations['chinese_${targetLanguage.code}'] ??
+          await translate(chinese),
+      danish: _$translations['danish_${targetLanguage.code}'] ??
+          await translate(danish),
+      english: _$translations['english_${targetLanguage.code}'] ??
+          await translate(english),
+      french: _$translations['french_${targetLanguage.code}'] ??
+          await translate(french),
+      german: _$translations['german_${targetLanguage.code}'] ??
+          await translate(german),
+      greek: _$translations['greek_${targetLanguage.code}'] ??
+          await translate(greek),
+      italian: _$translations['italian_${targetLanguage.code}'] ??
+          await translate(italian),
+      japanese: _$translations['japanese_${targetLanguage.code}'] ??
+          await translate(japanese),
+      kannada: _$translations['kannada_${targetLanguage.code}'] ??
+          await translate(kannada),
+      korean: _$translations['korean_${targetLanguage.code}'] ??
+          await translate(korean),
+      polish: _$translations['polish_${targetLanguage.code}'] ??
+          await translate(polish),
+      spanish: _$translations['spanish_${targetLanguage.code}'] ??
+          await translate(spanish),
     );
   }
 
@@ -96,30 +156,50 @@ class _Example implements Example, MlTranslation {
         '\$translations': $translations,
         'title': title,
         'bodyText': bodyText,
-        'bodyTextWithVar': bodyTextWithVar,
-        'secondText': secondText,
+        'chinese': chinese,
+        'danish': danish,
+        'english': english,
+        'french': french,
+        'german': german,
+        'greek': greek,
+        'italian': italian,
+        'japanese': japanese,
+        'kannada': kannada,
+        'korean': korean,
+        'polish': polish,
+        'spanish': spanish,
       };
 
   @override
-  _Example fromJson(Map<String, dynamic> json) => _Example(
+  _MyTranslation fromJson(Map<String, dynamic> json) => _MyTranslation(
         sourceLanguage: json['sourceLanguage'] as String,
         $downloading: json['\$downloading'] as String,
         $translating: json['\$translating'] as String,
         $done: json['\$done'] as String,
         $error: json['\$error'] as String,
         $attribution: json['\$attribution'] as String,
-        $translations: json['\$translations'] as Map<String, String>,
+        $translations: (json['\$translations'] as Map).cast<String, String>(),
         title: json['title'] as String,
         bodyText: json['bodyText'] as String,
-        bodyTextWithVar: json['bodyTextWithVar'] as String,
-        secondText: json['secondText'] as String,
+        chinese: json['chinese'] as String,
+        danish: json['danish'] as String,
+        english: json['english'] as String,
+        french: json['french'] as String,
+        german: json['german'] as String,
+        greek: json['greek'] as String,
+        italian: json['italian'] as String,
+        japanese: json['japanese'] as String,
+        kannada: json['kannada'] as String,
+        korean: json['korean'] as String,
+        polish: json['polish'] as String,
+        spanish: json['spanish'] as String,
       );
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _Example &&
+            other is _MyTranslation &&
             (identical(other.sourceLanguage, sourceLanguage) ||
                 other.sourceLanguage == sourceLanguage) &&
             (identical(other.$downloading, $downloading) ||
@@ -133,10 +213,19 @@ class _Example implements Example, MlTranslation {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.bodyText, bodyText) ||
                 other.bodyText == bodyText) &&
-            (identical(other.bodyTextWithVar, bodyTextWithVar) ||
-                other.bodyTextWithVar == bodyTextWithVar) &&
-            (identical(other.secondText, secondText) ||
-                other.secondText == secondText));
+            (identical(other.chinese, chinese) || other.chinese == chinese) &&
+            (identical(other.danish, danish) || other.danish == danish) &&
+            (identical(other.english, english) || other.english == english) &&
+            (identical(other.french, french) || other.french == french) &&
+            (identical(other.german, german) || other.german == german) &&
+            (identical(other.greek, greek) || other.greek == greek) &&
+            (identical(other.italian, italian) || other.italian == italian) &&
+            (identical(other.japanese, japanese) ||
+                other.japanese == japanese) &&
+            (identical(other.kannada, kannada) || other.kannada == kannada) &&
+            (identical(other.korean, korean) || other.korean == korean) &&
+            (identical(other.polish, polish) || other.polish == polish) &&
+            (identical(other.spanish, spanish) || other.spanish == spanish));
   }
 
   @override
@@ -149,27 +238,49 @@ class _Example implements Example, MlTranslation {
         $attribution,
         title,
         bodyText,
-        bodyTextWithVar,
-        secondText,
+        chinese,
+        danish,
+        english,
+        french,
+        german,
+        greek,
+        italian,
+        japanese,
+        kannada,
+        korean,
+        polish,
+        spanish,
       ]);
 }
 
-mixin _$Example {
+mixin _$MyTranslation {
   String get title => throw Exception();
   String get bodyText => throw Exception();
-  String get bodyTextWithVar => throw Exception();
-  String get secondText => throw Exception();
+  String get chinese => throw Exception();
+  String get danish => throw Exception();
+  String get english => throw Exception();
+  String get french => throw Exception();
+  String get german => throw Exception();
+  String get greek => throw Exception();
+  String get italian => throw Exception();
+  String get japanese => throw Exception();
+  String get kannada => throw Exception();
+  String get korean => throw Exception();
+  String get polish => throw Exception();
+  String get spanish => throw Exception();
 }
 
 class Translator extends StatefulWidget {
   const Translator({
     super.key,
     required this.builder,
-    this.cleanLanguageModels = true,
+    this.cleanLanguageModels = false,
   });
 
-  final Builder builder;
+  final Widget Function(BuildContext context) builder;
   final bool cleanLanguageModels;
+
+  static Future<void> init() => TranslatorUtils.initDb();
 
   static TranslatorState of(BuildContext context) {
     try {
@@ -186,52 +297,66 @@ class Translator extends StatefulWidget {
 }
 
 class TranslatorState extends State<Translator> {
-  late Example _translation;
+  late MyTranslation _translation;
   bool _isDownloading = false;
   bool _isTranslating = false;
   bool _showError = false;
   bool _showInfo = false;
 
-  Locale get locale => Locale((_translation as _Example).sourceLanguage);
+  Locale get locale => Locale((_translation as _MyTranslation).sourceLanguage);
 
-  String get _$downloading => (_translation as _Example).$downloading;
-  String get _$translating => (_translation as _Example).$translating;
-  String get _$done => (_translation as _Example).$done;
-  String get _$error => (_translation as _Example).$error;
-  String get _$attribution => (_translation as _Example).$attribution;
+  List<Locale> get supportedLocales =>
+      TranslationLanguage.values.map((lang) => Locale(lang.code)).toList();
+
+  String get _$downloading => (_translation as _MyTranslation).$downloading;
+  String get _$translating => (_translation as _MyTranslation).$translating;
+  String get _$done => (_translation as _MyTranslation).$done;
+  String get _$error => (_translation as _MyTranslation).$error;
+  String get _$attribution => (_translation as _MyTranslation).$attribution;
 
   /// My awesome title
   ///
   /// **My best app**
   String get title => _translation.title;
 
-  /// **This is some text**
+  /// **This text was translated by Google Translator**
   String get bodyText => _translation.bodyText;
 
-  String get _bodyTextWithVar => _translation.bodyTextWithVar;
+  /// **chinese**
+  String get chinese => _translation.chinese;
 
-  /// My descriptionix
-  ///
-  /// **This is some %s text**
-  String bodyTextWithVar(
-    String s0,
-  ) =>
-      _bodyTextWithVar.replaceFirst('%s', s0);
+  /// **danish**
+  String get danish => _translation.danish;
 
-  String get _secondText => _translation.secondText;
+  /// **english**
+  String get english => _translation.english;
 
-  /// Mój opis
-  ///
-  /// **This is %s line of text. %s, %s.**
-  String secondText(
-    String s0,
-    String s1,
-    String s2,
-  ) =>
-      _secondText
-          .replaceFirst('%s', s0)
-          .replaceFirst('%s', s1)
-          .replaceFirst('%s', s2);
+  /// **french**
+  String get french => _translation.french;
+
+  /// **german**
+  String get german => _translation.german;
+
+  /// **greek**
+  String get greek => _translation.greek;
+
+  /// **italian**
+  String get italian => _translation.italian;
+
+  /// **japanese**
+  String get japanese => _translation.japanese;
+
+  /// **kannada**
+  String get kannada => _translation.kannada;
+
+  /// **korean**
+  String get korean => _translation.korean;
+
+  /// **polish**
+  String get polish => _translation.polish;
+
+  /// **spanish**
+  String get spanish => _translation.spanish;
 
   Future<void> translateTo(TranslationLanguage targetLanguage) async {
     setState(() {
@@ -241,11 +366,11 @@ class TranslatorState extends State<Translator> {
       _showInfo = true;
     });
 
-    const source = (Example() as _Example);
+    const source = (MyTranslation() as _MyTranslation);
 
     final sourceLanguage = source.sourceLanguage;
 
-    final isInitialized = await TranslatorUtils.initTranslator(
+    final isInitialized = await TranslatorUtils.initLanguageModels(
       TranslationLanguage.values.firstWhere(
         (element) => element.code == sourceLanguage,
       ),
@@ -263,6 +388,8 @@ class TranslatorState extends State<Translator> {
 
     if (isInitialized) {
       final result = await source.translateTo(targetLanguage);
+
+      TranslatorUtils.saveTranslation<_MyTranslation>(result as _MyTranslation);
 
       setState(() {
         _translation = result;
@@ -286,18 +413,24 @@ class TranslatorState extends State<Translator> {
 
   @override
   void initState() {
-    _translation = const Example();
-
-    Future.delayed(
-      const Duration(seconds: 2),
-      () async {
-        await translateTo(
-          TranslationLanguage.polish,
-        );
-      },
+    final (translation, translationLanguage) =
+        TranslatorUtils.initTranslation<_MyTranslation>(
+      const MyTranslation() as _MyTranslation,
     );
 
+    _translation = translation;
+
+    if (translationLanguage != null) {
+      translateTo(translationLanguage);
+    }
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    TranslatorUtils.closeDb();
+    super.dispose();
   }
 
   @override
@@ -309,7 +442,9 @@ class TranslatorState extends State<Translator> {
         children: [
           _InheritedTranslator(
             state: this,
-            child: widget.builder,
+            child: Builder(
+              builder: (context) => widget.builder(context),
+            ),
           ),
           if (_showInfo)
             TranslatorLoadingWidget(

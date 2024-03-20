@@ -15,6 +15,7 @@ dependencies:
     path: ../ml_translator/
 
   cupertino_icons: ^1.0.6
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:

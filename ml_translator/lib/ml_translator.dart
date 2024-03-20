@@ -1,5 +1,6 @@
 library ml_translator;
 
+export 'dart:io';
 export 'package:flutter/material.dart';
 
 export 'src/annotations.dart';

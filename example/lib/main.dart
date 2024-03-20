@@ -1,9 +1,10 @@
-// import 'package:example/model/example.dart';
 import 'package:example/model/example.dart';
-import 'package:flutter/material.dart';
+import 'package:ml_translator/ml_translator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Translator.init();
 
   runApp(const MyApp());
 }
@@ -11,39 +12,51 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Translator(
-      builder: Builder(
-        builder: (context) {
-          return MaterialApp(
-            title: Translator.of(context).title,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true,
-            ),
-            locale: Translator.of(context).locale,
-            home: const MyHomePage(),
-          );
-        },
-      ),
+      builder: (context) {
+        final translator = Translator.of(context);
+
+        return MaterialApp(
+          title: translator.title,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          ),
+          locale: translator.locale,
+          supportedLocales: translator.supportedLocales,
+          //TODO add localization delegates
+          home: const MyHomePage(),
+        );
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatelessWidget {
   const MyHomePage({
     super.key,
   });
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
   Widget build(BuildContext context) {
+    print('---- ' + Localizations.localeOf(context).languageCode);
+
+    final buttons = [
+      (TranslationLanguage.chinese, Translator.of(context).chinese),
+      (TranslationLanguage.danish, Translator.of(context).danish),
+      (TranslationLanguage.english, Translator.of(context).english),
+      (TranslationLanguage.french, Translator.of(context).french),
+      (TranslationLanguage.german, Translator.of(context).german),
+      (TranslationLanguage.greek, Translator.of(context).greek),
+      (TranslationLanguage.italian, Translator.of(context).italian),
+      (TranslationLanguage.japanese, Translator.of(context).japanese),
+      (TranslationLanguage.kannada, Translator.of(context).kannada),
+      (TranslationLanguage.korean, Translator.of(context).korean),
+      (TranslationLanguage.polish, Translator.of(context).polish),
+      (TranslationLanguage.spanish, Translator.of(context).spanish),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -53,21 +66,37 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              Translator.of(context).bodyText,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              Translator.of(context).secondText(
-                'ZZZZZ',
-                'XXXX',
-                'YYYY22',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: MediaQuery.sizeOf(context).height * 0.3,
+                child: Center(
+                  child: Text(
+                    Translator.of(context).bodyText,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
-            Text(
-              Translator.of(context).bodyTextWithVar('1234'),
+            Expanded(
+              child: GridView.count(
+                padding: const EdgeInsets.all(8),
+                crossAxisCount: 2,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 9 / 4,
+                children: buttons
+                    .map(
+                      (e) => ElevatedButton(
+                        onPressed: () =>
+                            Translator.of(context).translateTo(e.$1),
+                        child: Text(e.$2),
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
