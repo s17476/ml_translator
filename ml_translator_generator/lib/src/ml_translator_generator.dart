@@ -364,6 +364,12 @@ class TranslatorState extends State<Translator> {
 
   List<Locale> get supportedLocales =>
       TranslationLanguage.values.map((lang) => Locale(lang.code)).toList();
+
+  List<LocalizationsDelegate<dynamic>> get localizationsDelegates => [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ];
   
   ''');
 

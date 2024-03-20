@@ -308,6 +308,12 @@ class TranslatorState extends State<Translator> {
   List<Locale> get supportedLocales =>
       TranslationLanguage.values.map((lang) => Locale(lang.code)).toList();
 
+  List<LocalizationsDelegate<dynamic>> get localizationsDelegates => [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ];
+
   String get _$downloading => (_translation as _MyTranslation).$downloading;
   String get _$translating => (_translation as _MyTranslation).$translating;
   String get _$done => (_translation as _MyTranslation).$done;
