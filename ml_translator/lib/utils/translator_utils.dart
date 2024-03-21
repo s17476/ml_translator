@@ -73,7 +73,7 @@ void main() async {
 
     // text has been changed
     if (sourceTranslation != translation) {
-      // print('--- Text changed');
+      print('--- Text changed');
       final targetLanguage = box!.get(kTargetLanguage) as String?;
 
       box!
@@ -95,7 +95,7 @@ void main() async {
         return (translation, translationLanguage);
       }
     } else {
-      // print('--- Text not changed');
+      print('--- Text not changed');
       final target = (box!.get(kTarget) as Map?)?.cast<String, dynamic>();
 
       if (target != null) {

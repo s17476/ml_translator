@@ -9,7 +9,7 @@ part of 'example.dart';
 const _$translations = <String, String>{
   'title_pl': 'Mój customowy własny opis',
   'polish_pl': 'polski',
-  'spanish_pl': 'hiszp.',
+  'spanish_pl': 'hiszp',
 };
 
 class _MyTranslation implements MyTranslation, MlTranslation {
@@ -23,7 +23,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
         'THIS SERVICE MAY CONTAIN TRANSLATIONS POWERED BY GOOGLE. GOOGLE DISCLAIMS ALL WARRANTIES RELATED TO THE TRANSLATIONS, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTIES OF ACCURACY, RELIABILITY, AND ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.',
     this.$translations = _$translations,
     this.title = 'My best app',
-    this.bodyText = 'This text was translated by Google Translator',
+    this.bodyText = 'This text was translated by Google Translator.',
     this.chinese = 'chinese',
     this.danish = 'danish',
     this.english = 'english',
@@ -210,6 +210,8 @@ class _MyTranslation implements MyTranslation, MlTranslation {
             (identical(other.$error, $error) || other.$error == $error) &&
             (identical(other.$attribution, $attribution) ||
                 other.$attribution == $attribution) &&
+            (mapEquals(other.$translations, $translations) ||
+                other.$translations == $translations) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.bodyText, bodyText) ||
                 other.bodyText == bodyText) &&
@@ -236,6 +238,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
         $done,
         $error,
         $attribution,
+        $translations,
         title,
         bodyText,
         chinese,
@@ -325,7 +328,7 @@ class TranslatorState extends State<Translator> {
   /// **My best app**
   String get title => _translation.title;
 
-  /// **This text was translated by Google Translator**
+  /// **This text was translated by Google Translator.**
   String get bodyText => _translation.bodyText;
 
   /// **chinese**

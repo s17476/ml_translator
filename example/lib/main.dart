@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
           locale: translator.locale,
           supportedLocales: translator.supportedLocales,
           localizationsDelegates: translator.localizationsDelegates,
-          //TODO add localization delegates
           home: const MyHomePage(),
         );
       },

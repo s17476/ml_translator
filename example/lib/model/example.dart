@@ -13,7 +13,7 @@ class MyTranslation with _$MyTranslation {
       pl: 'Mój customowy własny opis',
     )
     String title,
-    @Val('This text was translated by Google Translator') String bodyText,
+    @Val('This text was translated by Google Translator.') String bodyText,
     @Val('chinese') String chinese,
     @Val('danish') String danish,
     @Val('english') String english,
@@ -25,7 +25,7 @@ class MyTranslation with _$MyTranslation {
     @Val('kannada') String kannada,
     @Val('korean') String korean,
     @Val('polish', pl: 'polski') String polish,
-    @Val('spanish', pl: 'hiszp.') String spanish,
+    @Val('spanish', pl: 'hiszp') String spanish,
   }) = _MyTranslation;
 }
 

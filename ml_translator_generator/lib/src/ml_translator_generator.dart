@@ -274,9 +274,9 @@ _${visitor.className} fromJson(Map<String, dynamic> json) => _${visitor.classNam
     }
 
 //TODO - fix or it can't be used
-    // buffer.writeln(
-    //   '&& (identical(other.\$translations, \$translations) || other.\$translations == \$translations)',
-    // );
+    buffer.writeln(
+      '&& (mapEquals(other.\$translations, \$translations) || other.\$translations == \$translations)',
+    );
 
     for (var element in visitor.elements) {
       buffer.writeln(
@@ -302,9 +302,9 @@ _${visitor.className} fromJson(Map<String, dynamic> json) => _${visitor.classNam
       }
     }
 
-    // buffer.writeln(
-    //   '\$translations,',
-    // );
+    buffer.writeln(
+      '\$translations,',
+    );
 
     for (var element in visitor.elements) {
       buffer.writeln('${element.displayName},');
