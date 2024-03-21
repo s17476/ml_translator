@@ -13,15 +13,27 @@ class TranslatorUtils {
   static const kTarget = 'target';
   static const kTargetLanguage = 'target_language';
 
+  static const kAutoDetectionDialog = 'auto_detection_dialog';
+
   static TranslationLanguage? _sourceLanguage;
   static TranslationLanguage? _targetLanguage;
   static OnDeviceTranslator? _translator;
   static Box? box;
 
+  static bool showTranslationDialog = false;
+
   static Future<void> initDb() async {
     await Hive.initFlutter();
 
     box = await Hive.openBox(kMlTranslator);
+
+    final detectionDialogShown = box!.get(kAutoDetectionDialog);
+
+    if (detectionDialogShown == null || !detectionDialogShown) {
+      showTranslationDialog = true;
+
+      box!.put(kAutoDetectionDialog, false);
+    }
   }
 
   static Future<void> closeDb() async => await box!.close();
@@ -77,7 +89,6 @@ void main() async {
       final targetLanguage = box!.get(kTargetLanguage) as String?;
 
       box!
-        ..clear()
         ..put(kSource, translation.toJson())
         ..put(kSourceLanguage, translation.sourceLanguage);
 
@@ -236,4 +247,14 @@ void main() async {
 
   static void saveTranslation<T extends MlTranslation>(T translation) =>
       box!.put(kTarget, translation.toJson());
+
+  static bool isCurrentLanguage(TranslationLanguage targetLanguage) {
+    final current = box!.get(kTargetLanguage) as String?;
+
+    if (current == null) return false;
+
+    final currentLanguage = TranslationLanguage.fromJson(current);
+
+    return currentLanguage == targetLanguage;
+  }
 }

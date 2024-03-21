@@ -142,7 +142,12 @@ class _TranslatorLoadingWidgetState extends State<TranslatorLoadingWidget>
                 ),
               ),
               const SizedBox(height: 50),
-              Image.asset('packages/ml_translator/images/white-google.png'),
+              SizedBox(
+                height: 30,
+                child: Image.asset(
+                  'packages/ml_translator/images/white-google.png',
+                ),
+              ),
               SizedBox(
                 height: 150,
                 child: (widget.showError ||

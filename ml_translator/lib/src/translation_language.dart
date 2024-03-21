@@ -65,5 +65,8 @@ enum TranslationLanguage {
 
   String toJson() => name;
 
+  static TranslationLanguage? fromCode(String code) =>
+      values.where((element) => element.code == code).firstOrNull;
+
   static TranslationLanguage fromJson(String json) => values.byName(json);
 }

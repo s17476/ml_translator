@@ -324,10 +324,12 @@ class Translator extends StatefulWidget {
     super.key,
     required this.builder,
     this.cleanLanguageModels = false,
+    this.detectDeviceLanguage = true,
   });
 
   final Widget Function(BuildContext context) builder;
   final bool cleanLanguageModels;
+  final bool detectDeviceLanguage;
 
   static Future<void> init() => TranslatorUtils.initDb();
 
@@ -359,6 +361,8 @@ class TranslatorState extends State<Translator> {
   bool _isTranslating = false;
   bool _showError = false;
   bool _showInfo = false;
+  bool _showDialog = false;
+  bool _imagesPrecached = false;
 
   Locale get locale => Locale((_translation as _${visitor.className}).sourceLanguage);
 
@@ -482,9 +486,46 @@ void _confirmTranslation() {
 ''');
 
     buffer.write('''
+  void _confirmDialog(TranslationLanguage language) {
+    setState(() {
+      _showDialog = false;
+    });
+
+    //TODO - update dialogu
+
+    translateTo(language);
+  }
+
+  void _cancelDialog() {
+    setState(() {
+      _showDialog = false;
+    });
+  }
+''');
+
+    buffer.write('''
+  @override
+  void didChangeDependencies() {
+    if (!_imagesPrecached) {
+      Future(() async {
+        await precacheImage(
+          const AssetImage('packages/ml_translator/images/white-google.png'),
+          context,
+        );
+
+        setState(() {
+          _imagesPrecached = true;
+        });
+      });
+    }
+    super.didChangeDependencies();
+  }
+''');
+
+    buffer.write('''
 @override
   void initState() {
-    final (translation, translationLanguage) = TranslatorUtils.initTranslation<_${visitor.className}>(
+     final (translation, translationLanguage) = TranslatorUtils.initTranslation<_${visitor.className}>(
       const ${visitor.className}() as _${visitor.className},
     );
 
@@ -492,6 +533,24 @@ void _confirmTranslation() {
 
     if (translationLanguage != null) {
       translateTo(translationLanguage);
+    } else if (widget.detectDeviceLanguage) {
+      final languageAndLocale = Platform.localeName.split('_');
+
+      if (languageAndLocale.isNotEmpty) {
+        final deviceLanguageCode = languageAndLocale[0];
+
+        final targetLanguage = TranslationLanguage.fromCode(deviceLanguageCode);
+
+        if (targetLanguage != null) {
+          final isCurrent = TranslatorUtils.isCurrentLanguage(targetLanguage);
+
+          if (!isCurrent) {
+            if (TranslatorUtils.showTranslationDialog) {
+              _showDialog = true;
+            }
+          }
+        }
+      }
     }
 
     super.initState();
@@ -529,7 +588,12 @@ void _confirmTranslation() {
               error: _\$error,
               attribution: _\$attribution,
               confirm: _confirmTranslation,
-            )
+            ),
+          if (_showDialog)
+            TranslatorDialog(
+              confirm: _confirmDialog,
+              cancel: _cancelDialog,
+            ),
         ],
       ),
     );

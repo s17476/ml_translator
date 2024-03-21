@@ -278,10 +278,12 @@ class Translator extends StatefulWidget {
     super.key,
     required this.builder,
     this.cleanLanguageModels = false,
+    this.detectDeviceLanguage = true,
   });
 
   final Widget Function(BuildContext context) builder;
   final bool cleanLanguageModels;
+  final bool detectDeviceLanguage;
 
   static Future<void> init() => TranslatorUtils.initDb();
 
@@ -305,6 +307,8 @@ class TranslatorState extends State<Translator> {
   bool _isTranslating = false;
   bool _showError = false;
   bool _showInfo = false;
+  bool _showDialog = false;
+  bool _imagesPrecached = false;
 
   Locale get locale => Locale((_translation as _MyTranslation).sourceLanguage);
 
@@ -420,6 +424,39 @@ class TranslatorState extends State<Translator> {
     });
   }
 
+  void _confirmDialog(TranslationLanguage language) {
+    setState(() {
+      _showDialog = false;
+    });
+
+    //TODO - update dialogu
+
+    translateTo(language);
+  }
+
+  void _cancelDialog() {
+    setState(() {
+      _showDialog = false;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (!_imagesPrecached) {
+      Future(() async {
+        await precacheImage(
+          const AssetImage('packages/ml_translator/images/white-google.png'),
+          context,
+        );
+
+        setState(() {
+          _imagesPrecached = true;
+        });
+      });
+    }
+    super.didChangeDependencies();
+  }
+
   @override
   void initState() {
     final (translation, translationLanguage) =
@@ -431,6 +468,24 @@ class TranslatorState extends State<Translator> {
 
     if (translationLanguage != null) {
       translateTo(translationLanguage);
+    } else if (widget.detectDeviceLanguage) {
+      final languageAndLocale = Platform.localeName.split('_');
+
+      if (languageAndLocale.isNotEmpty) {
+        final deviceLanguageCode = languageAndLocale[0];
+
+        final targetLanguage = TranslationLanguage.fromCode(deviceLanguageCode);
+
+        if (targetLanguage != null) {
+          final isCurrent = TranslatorUtils.isCurrentLanguage(targetLanguage);
+
+          if (!isCurrent) {
+            if (TranslatorUtils.showTranslationDialog) {
+              _showDialog = true;
+            }
+          }
+        }
+      }
     }
 
     super.initState();
@@ -466,7 +521,12 @@ class TranslatorState extends State<Translator> {
               error: _$error,
               attribution: _$attribution,
               confirm: _confirmTranslation,
-            )
+            ),
+          if (_showDialog)
+            TranslatorDialog(
+              confirm: _confirmDialog,
+              cancel: _cancelDialog,
+            ),
         ],
       ),
     );
