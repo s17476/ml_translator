@@ -109,7 +109,7 @@ class _TranslatorLoadingWidgetState extends State<TranslatorLoadingWidget>
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
-                        widget.attribution,
+                        widget.attribution.toUpperCase(),
                         style: TextStyle(
                           color: Colors.grey.shade300,
                           fontSize: 16,

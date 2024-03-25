@@ -7,13 +7,13 @@ part of 'example.dart';
 // **************************************************************************
 
 const _$translations = <String, String>{
-  'title_pl': 'Mój customowy własny opis',
+  'title_pl': 'Mój customowy tytuł',
   'polish_pl': 'polski',
   'spanish_pl': 'hiszp',
 };
 
-class _MyTranslation implements MyTranslation, MlTranslation {
-  const _MyTranslation({
+class _MyStrings implements MyStrings, MlTranslation {
+  const _MyStrings({
     this.sourceLanguage = 'en',
     this.$downloading = 'Downloading language model',
     this.$translating = 'Translating',
@@ -102,12 +102,12 @@ class _MyTranslation implements MyTranslation, MlTranslation {
   final String spanish;
 
   @override
-  Future<MyTranslation> translateTo(TranslationLanguage targetLanguage) async {
+  Future<MyStrings> translateTo(TranslationLanguage targetLanguage) async {
     const translate = TranslatorUtils.translate;
 
     if (targetLanguage.code == sourceLanguage) return this;
 
-    return _MyTranslation(
+    return _MyStrings(
       sourceLanguage: targetLanguage.code,
       $downloading: await translate($downloading),
       $translating: await translate($translating),
@@ -171,7 +171,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
       };
 
   @override
-  _MyTranslation fromJson(Map<String, dynamic> json) => _MyTranslation(
+  _MyStrings fromJson(Map<String, dynamic> json) => _MyStrings(
         sourceLanguage: json['sourceLanguage'] as String,
         $downloading: json['\$downloading'] as String,
         $translating: json['\$translating'] as String,
@@ -199,7 +199,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _MyTranslation &&
+            other is _MyStrings &&
             (identical(other.sourceLanguage, sourceLanguage) ||
                 other.sourceLanguage == sourceLanguage) &&
             (identical(other.$downloading, $downloading) ||
@@ -256,7 +256,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
       ]);
 }
 
-mixin _$MyTranslation {
+mixin _$MyStrings {
   String get title => throw Exception();
   String get bodyText => throw Exception();
   String get chinese => throw Exception();
@@ -281,10 +281,23 @@ class Translator extends StatefulWidget {
     this.detectDeviceLanguage = true,
   });
 
-  final Widget Function(BuildContext context) builder;
+  final Widget Function(
+    BuildContext context,
+    TranslatorState state,
+  ) builder;
   final bool cleanLanguageModels;
   final bool detectDeviceLanguage;
 
+  /// This part should be initialized in `main()` function
+  /// ```
+  /// void main() async {
+  ///   WidgetsFlutterBinding.ensureInitialized();
+  ///
+  ///   await Translator.init();
+  ///
+  ///   runApp(const MyApp());
+  /// }
+  /// ```
   static Future<void> init() => TranslatorUtils.initDb();
 
   static TranslatorState of(BuildContext context) {
@@ -302,7 +315,7 @@ class Translator extends StatefulWidget {
 }
 
 class TranslatorState extends State<Translator> {
-  late MyTranslation _translation;
+  late MyStrings _translation;
   bool _isDownloading = false;
   bool _isTranslating = false;
   bool _showError = false;
@@ -310,7 +323,7 @@ class TranslatorState extends State<Translator> {
   bool _showDialog = false;
   bool _imagesPrecached = false;
 
-  Locale get locale => Locale((_translation as _MyTranslation).sourceLanguage);
+  Locale get locale => Locale((_translation as _MyStrings).sourceLanguage);
 
   List<Locale> get supportedLocales =>
       TranslationLanguage.values.map((lang) => Locale(lang.code)).toList();
@@ -321,11 +334,11 @@ class TranslatorState extends State<Translator> {
         GlobalCupertinoLocalizations.delegate,
       ];
 
-  String get _$downloading => (_translation as _MyTranslation).$downloading;
-  String get _$translating => (_translation as _MyTranslation).$translating;
-  String get _$done => (_translation as _MyTranslation).$done;
-  String get _$error => (_translation as _MyTranslation).$error;
-  String get _$attribution => (_translation as _MyTranslation).$attribution;
+  String get _$downloading => (_translation as _MyStrings).$downloading;
+  String get _$translating => (_translation as _MyStrings).$translating;
+  String get _$done => (_translation as _MyStrings).$done;
+  String get _$error => (_translation as _MyStrings).$error;
+  String get _$attribution => (_translation as _MyStrings).$attribution;
 
   /// My awesome title
   ///
@@ -379,7 +392,7 @@ class TranslatorState extends State<Translator> {
       _showInfo = true;
     });
 
-    const source = (MyTranslation() as _MyTranslation);
+    const source = (MyStrings() as _MyStrings);
 
     final sourceLanguage = source.sourceLanguage;
 
@@ -402,7 +415,7 @@ class TranslatorState extends State<Translator> {
     if (isInitialized) {
       final result = await source.translateTo(targetLanguage);
 
-      TranslatorUtils.saveTranslation<_MyTranslation>(result as _MyTranslation);
+      TranslatorUtils.saveTranslation<_MyStrings>(result as _MyStrings);
 
       setState(() {
         _translation = result;
@@ -428,8 +441,6 @@ class TranslatorState extends State<Translator> {
     setState(() {
       _showDialog = false;
     });
-
-    //TODO - update dialogu
 
     translateTo(language);
   }
@@ -460,8 +471,8 @@ class TranslatorState extends State<Translator> {
   @override
   void initState() {
     final (translation, translationLanguage) =
-        TranslatorUtils.initTranslation<_MyTranslation>(
-      const MyTranslation() as _MyTranslation,
+        TranslatorUtils.initTranslation<_MyStrings>(
+      const MyStrings() as _MyStrings,
     );
 
     _translation = translation;
@@ -481,6 +492,8 @@ class TranslatorState extends State<Translator> {
 
           if (!isCurrent) {
             if (TranslatorUtils.showTranslationDialog) {
+              TranslatorUtils.setDialogShown();
+
               _showDialog = true;
             }
           }
@@ -507,7 +520,7 @@ class TranslatorState extends State<Translator> {
           _InheritedTranslator(
             state: this,
             child: Builder(
-              builder: (context) => widget.builder(context),
+              builder: (context) => widget.builder(context, this),
             ),
           ),
           if (_showInfo)

@@ -1,8 +1,23 @@
 class MlTranslator {
+  /// The language in which the default text of the application was entered.
+  /// The preferred default language is English.
+  /// English also provides the best quality translations.
   final String sourceLanguage;
+
+  /// Overwrite default text on the translation screen for:
+  /// \"***Downloading language model***\"
   final String downloading;
+
+  /// Overwrite default text on the translation screen for:
+  /// \"***Translating***\"
   final String translating;
+
+  /// Overwrite default text on the translation screen for:
+  /// \"***Done***\"
   final String done;
+
+  /// Overwrite default text on the translation screen for:
+  /// \"***Error***\"
   final String error;
 
   const MlTranslator({
@@ -17,7 +32,11 @@ class MlTranslator {
 const mlTranslator = MlTranslator();
 
 class Val {
+  /// The value of this field for the default language.
   final String val;
+
+  /// Optional description of this field.
+  /// The text entered here will appear in the tooltips.
   final String? description;
   final String? af;
   final String? sq;

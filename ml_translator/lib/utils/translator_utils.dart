@@ -58,34 +58,26 @@ void main() async {
 
     final source = (box!.get(kSource) as Map?)?.cast<String, dynamic>();
 
-    // save source to db if it is first run
+    // Save translation source to db if it is first run.
     if (source == null) {
-      // print('--- first run');
-
       box!
         ..put(kSource, translation.toJson())
         ..put(kSourceLanguage, translation.sourceLanguage);
 
       return (translation, null);
     }
-    // print('--- NOT first run');
 
     MlTranslation? sourceTranslation;
 
     try {
       sourceTranslation = translation.fromJson(source);
     } catch (_) {
-      // print('--- CHANGED Json schema');
-
       sourceTranslation = null;
     }
 
-    // print('--- ${sourceTranslation.hashCode}');
-    // print('--- ${translation.hashCode}');
-
-    // text has been changed
+    // Translation source has been changed
     if (sourceTranslation != translation) {
-      print('--- Text changed');
+      // Target language name
       final targetLanguage = box!.get(kTargetLanguage) as String?;
 
       box!
@@ -93,8 +85,6 @@ void main() async {
         ..put(kSourceLanguage, translation.sourceLanguage);
 
       if (targetLanguage != null) {
-        // print('--- Translation found - translate and save. return translation');
-
         TranslationLanguage? translationLanguage;
 
         try {
@@ -106,7 +96,6 @@ void main() async {
         return (translation, translationLanguage);
       }
     } else {
-      print('--- Text not changed');
       final target = (box!.get(kTarget) as Map?)?.cast<String, dynamic>();
 
       if (target != null) {
@@ -116,8 +105,6 @@ void main() async {
       }
     }
 
-    // print('--- Original text');
-    // text has not been changed
     return (translation, null);
   }
 
@@ -257,4 +244,7 @@ void main() async {
 
     return currentLanguage == targetLanguage;
   }
+
+  static void setDialogShown() async =>
+      await box!.put(kAutoDetectionDialog, true);
 }

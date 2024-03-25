@@ -15,17 +15,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Translator(
-      builder: (context) {
-        final translator = Translator.of(context);
-
+      builder: (context, state) {
         return MaterialApp(
-          title: translator.title,
+          title: state.title,
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.deepPurple,
+            ),
           ),
-          locale: translator.locale,
-          supportedLocales: translator.supportedLocales,
-          localizationsDelegates: translator.localizationsDelegates,
+          locale: state.locale,
+          supportedLocales: state.supportedLocales,
+          localizationsDelegates: state.localizationsDelegates,
           home: const MyHomePage(),
         );
       },
@@ -40,8 +40,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('---- ' + Localizations.localeOf(context).languageCode);
-
     final buttons = [
       (TranslationLanguage.chinese, Translator.of(context).chinese),
       (TranslationLanguage.danish, Translator.of(context).danish),
