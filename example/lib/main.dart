@@ -1,4 +1,6 @@
 import 'package:example/model/example.dart';
+import 'package:example/widgets/translate_text_field.dart';
+import 'package:flutter/material.dart';
 import 'package:ml_translator/ml_translator.dart';
 
 void main() async {
@@ -56,27 +58,35 @@ class MyHomePage extends StatelessWidget {
     ];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(Translator.of(context).title),
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.3,
-                child: Center(
-                  child: Text(
-                    Translator.of(context).bodyText,
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const TranslateTextField(),
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      child: Center(
+                        child: Text(
+                          Translator.of(context).bodyText,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            Expanded(
+            SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.4,
               child: GridView.count(
                 padding: const EdgeInsets.all(8),
                 crossAxisCount: 2,
