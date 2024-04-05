@@ -1,0 +1,36 @@
+name: example
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ml_translator:
+    path: ..
+
+  cupertino_icons: ^1.0.6
+  path_provider: ^2.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  ml_translator_generator:
+    path: ../../ml_translator_generator/
+  build_runner:
+  flutter_lints: ^3.0.0
+
+dependency_overrides:
+  ml_translator:
+    path: ..
+  ml_translator_generator:
+    path: ../../ml_translator_generator/
+
+flutter:
+  uses-material-design: true
+

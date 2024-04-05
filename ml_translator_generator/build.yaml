@@ -1,0 +1,7 @@
+builders:
+  translator_builder:
+    import: "package:ml_translator_generator/builder.dart"
+    builder_factories: ["translatorBuilder"] #Builder name(BuilderOptions)
+    build_extensions: { ".dart": [".translator.dart"] }
+    auto_apply: dependents
+    build_to: source
