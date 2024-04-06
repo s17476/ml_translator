@@ -1,5 +1,5 @@
 name: ml_translator_generator
-description: "Code generator for ml_package"
+description: "Code generator for ml_translator"
 version: 0.0.1
 homepage: https://techverse.icu/
 repository: https://github.com/s17476/ml_translator
