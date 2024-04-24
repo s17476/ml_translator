@@ -24,6 +24,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
     this.$translations = _$translations,
     this.title = 'My best app',
     this.bodyText = 'This text was translated by Google Translator.',
+    this.rockin = 'rock\'n',
     this.chinese = 'chinese',
     this.danish = 'danish',
     this.english = 'english',
@@ -64,6 +65,9 @@ class _MyTranslation implements MyTranslation, MlTranslation {
 
   @override
   final String bodyText;
+
+  @override
+  final String rockin;
 
   @override
   final String chinese;
@@ -118,6 +122,8 @@ class _MyTranslation implements MyTranslation, MlTranslation {
           await translate(title),
       bodyText: _$translations['bodyText_${targetLanguage.code}'] ??
           await translate(bodyText),
+      rockin: _$translations['rockin_${targetLanguage.code}'] ??
+          await translate(rockin),
       chinese: _$translations['chinese_${targetLanguage.code}'] ??
           await translate(chinese),
       danish: _$translations['danish_${targetLanguage.code}'] ??
@@ -156,6 +162,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
         '\$translations': $translations,
         'title': title,
         'bodyText': bodyText,
+        'rockin': rockin,
         'chinese': chinese,
         'danish': danish,
         'english': english,
@@ -181,6 +188,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
         $translations: (json['\$translations'] as Map).cast<String, String>(),
         title: json['title'] as String,
         bodyText: json['bodyText'] as String,
+        rockin: json['rockin'] as String,
         chinese: json['chinese'] as String,
         danish: json['danish'] as String,
         english: json['english'] as String,
@@ -215,6 +223,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.bodyText, bodyText) ||
                 other.bodyText == bodyText) &&
+            (identical(other.rockin, rockin) || other.rockin == rockin) &&
             (identical(other.chinese, chinese) || other.chinese == chinese) &&
             (identical(other.danish, danish) || other.danish == danish) &&
             (identical(other.english, english) || other.english == english) &&
@@ -241,6 +250,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
         $translations,
         title,
         bodyText,
+        rockin,
         chinese,
         danish,
         english,
@@ -259,6 +269,7 @@ class _MyTranslation implements MyTranslation, MlTranslation {
 mixin _$MyTranslation {
   String get title => throw Exception();
   String get bodyText => throw Exception();
+  String get rockin => throw Exception();
   String get chinese => throw Exception();
   String get danish => throw Exception();
   String get english => throw Exception();
@@ -354,6 +365,9 @@ class TranslatorState extends State<Translator> {
 
   /// **This text was translated by Google Translator.**
   String get bodyText => _translation.bodyText;
+
+  /// **rock'n**
+  String get rockin => _translation.rockin;
 
   /// **chinese**
   String get chinese => _translation.chinese;

@@ -70,7 +70,11 @@ void createClassPattern(
       );
     }
 
-    final value = annotation.getField('val')?.toStringValue();
+    final value = annotation
+        .getField('val')
+        ?.toStringValue()
+        ?.replaceAll('\'', '\\\'')
+        .replaceAll('"', '\\"');
 
     if (value!.isEmpty) {
       throw Exception(

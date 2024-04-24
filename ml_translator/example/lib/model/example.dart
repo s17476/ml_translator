@@ -12,6 +12,7 @@ class MyTranslation with _$MyTranslation {
     )
     String title,
     @Val('This text was translated by Google Translator.') String bodyText,
+    @Val('rock\'n') String rockin,
     @Val('chinese') String chinese,
     @Val('danish') String danish,
     @Val('english') String english,

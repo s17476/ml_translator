@@ -1,3 +1,6 @@
+## 0.0.2
+* Apostrophe fix
+
 ## 0.0.1
 
 * Translator widget to provide strings translations and localizations settings.
